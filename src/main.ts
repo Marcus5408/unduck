@@ -44,11 +44,13 @@ function noSearchDefaultPageRender() {
   });
 }
 
-const LS_DEFAULT_BANG = localStorage.getItem("default-bang") ?? "g";
-const defaultBang = bangs.find((b) => b.t === LS_DEFAULT_BANG);
-
 function getBangredirectUrl() {
   const url = new URL(window.location.href);
+
+  // If the `defaultBang` param is set, use that
+  const defaultBangParam = url.searchParams.get("defaultBang") ?? "g";
+  const defaultBang = bangs.find((b) => b.t === defaultBangParam);
+
   const query = url.searchParams.get("q")?.trim() ?? "";
   if (!query) {
     noSearchDefaultPageRender();
@@ -72,7 +74,7 @@ function getBangredirectUrl() {
   const searchUrl = selectedBang?.u.replace(
     "{{{s}}}",
     // Replace %2F with / to fix formats like "!ghr+t3dotgg/unduck"
-    encodeURIComponent(cleanQuery).replace(/%2F/g, "/"),
+    encodeURIComponent(cleanQuery).replace(/%2F/g, "/")
   );
   if (!searchUrl) return null;
 
